@@ -1,0 +1,15 @@
+-r base.txt
+ruff
+coverage
+pip-tools
+pyinstaller
+scriv
+twine
+
+# Types packages
+types-docutils
+types-PyYAML
+types-requests
+
+# Smoke test runner
+pytest

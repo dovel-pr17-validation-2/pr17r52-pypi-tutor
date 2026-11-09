@@ -1,0 +1,38 @@
+# Version updates run on demand, to keep the number of open pull requests
+# manageable: trigger them from Insights > Dependency graph > Dependabot >
+# "Check for updates". Dependabot has no manual-only schedule, so the
+# semiannual interval below (every six months) is only a fallback.
+version: 2
+updates:
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    target-branch: "release"
+    schedule:
+      interval: "semiannually"
+    ignore:
+      - dependency-name: "*"
+        update-types:
+          - "version-update:semver-major"
+
+  - package-ecosystem: "docker"
+    directory: "/tutor/templates/build/permissions"
+    target-branch: "main"
+    schedule:
+      interval: "semiannually"
+    ignore:
+      - dependency-name: "alpine"
+        update-types:
+          - "version-update:semver-major"
+          - "version-update:semver-minor"
+
+  - package-ecosystem: "pip"
+    directory: "/"
+    target-branch: "release"
+    schedule:
+      interval: "semiannually"
+    ignore:
+      - dependency-name: "tutor-*" # requirements/plugins.txt is manually controlled
+      - dependency-name: "*"
+        update-types:
+          - "version-update:semver-major"
+          - "version-update:semver-minor"

@@ -1,0 +1,47 @@
+name: Run tests
+
+on:
+  push:
+    branches:
+      - release
+      - main
+  pull_request:
+    branches:
+      - release
+      - main
+
+# This workflow restores the pip cache, which other workflows can write to (see
+# smoke-command.yml), so it must not get a write token.
+permissions:
+  contents: read
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+         python-version: ['3.10', '3.14']
+    steps:
+      - uses: actions/checkout@v6
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version:  ${{ matrix.python-version }}
+          cache: 'pip'
+          cache-dependency-path: requirements/dev.txt
+      - name: Install dependencies
+        run: pip install -e .[dev]
+      - name: Static code analysis
+        run: make test-lint
+      - name: Python unit tests
+        run: make test-unit
+      - name: Static type checks
+        run: make test-types
+      - name: Code formatting
+        run: make test-format
+      - name: Package tests
+        run: make test-pythonpackage
+      - name: Install docs dependencies
+        run: pip install -r requirements/docs.txt
+      - name: Build docs
+        run: make docs
